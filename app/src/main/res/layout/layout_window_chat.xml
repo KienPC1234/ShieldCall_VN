@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp"
+    android:layout_margin="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#FFFFFF">
+
+        <!-- Header -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="#F5F5F5"
+            android:paddingHorizontal="16dp">
+            
+            <TextView
+                android:id="@+id/txt_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="ShieldCall AI"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:textSize="16sp"/>
+
+            <ImageButton
+                android:id="@+id/btn_close_window"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:tint="#757575"/>
+        </RelativeLayout>
+
+        <!-- Loading View -->
+        <LinearLayout
+            android:id="@+id/layout_loading"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/txt_loading_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Đang phân tích..."
+                android:textColor="#666666"/>
+        </LinearLayout>
+
+        <!-- Recording View -->
+         <LinearLayout
+            android:id="@+id/layout_recording"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@android:drawable/ic_btn_speak_now"
+                android:tint="#F44336"/>
+            <TextView
+                android:id="@+id/txt_record_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="00:00"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#F44336"/>
+             <Button
+                 android:id="@+id/btn_stop_record"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Dừng &amp; Phân tích"
+                 android:layout_marginTop="16dp"
+                 android:backgroundTint="#F44336"
+                 android:textColor="#FFFFFF"/>
+        </LinearLayout>
+
+        <!-- Chat Area -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_chat"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"/>
+
+        <!-- Input Area -->
+        <LinearLayout
+            android:id="@+id/layout_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:background="#FAFAFA"
+            android:gravity="center_vertical">
+
+            <ImageButton
+                android:id="@+id/btn_attach_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:tint="#666666"/>
+
+            <EditText
+                android:id="@+id/edt_chat_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="Hỏi AI hoặc dán tin nhắn..."
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:textSize="14sp"
+                android:maxLines="4"/>
+
+            <ImageButton
+                android:id="@+id/btn_send"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_send"
+                android:tint="#2196F3"/>
+        </LinearLayout>
+        
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
