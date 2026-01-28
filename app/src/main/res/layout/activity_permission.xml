@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    tools:context=".PermissionActivity">
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_launcher_foreground"
+        app:tint="?colorPrimary"
+        android:contentDescription="@string/app_name" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Yêu cầu cấp quyền"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ShieldCall VN cần một số quyền để có thể cảnh báo lừa đảo và bảo vệ bạn."
+        android:textAlignment="center"
+        android:layout_marginTop="8dp"/>
+
+    <LinearLayout
+        android:id="@+id/permission_call_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Quyền Điện thoại (để nhận diện cuộc gọi)"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btn_grant_call_permission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cấp quyền"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/permission_overlay_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Hiển thị trên ứng dụng khác (để hiện cảnh báo)"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btn_grant_overlay_permission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cấp quyền"/>
+    </LinearLayout>
+
+</LinearLayout>
