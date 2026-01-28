@@ -38,7 +38,7 @@ class ScreenCaptureActivity : AppCompatActivity() {
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             // Pass the permission result to the Service
             val intent = Intent(this, OverlayService::class.java).apply {
-                action = "START_SCREEN_CAPTURE"
+                action = OverlayService.ACTION_START_SCREEN_CAPTURE
                 putExtra("RESULT_CODE", result.resultCode)
                 putExtra("DATA_INTENT", result.data)
             }

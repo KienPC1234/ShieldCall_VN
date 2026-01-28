@@ -31,6 +31,14 @@ class ShieldCallApplication : Application() {
 
                 if (isDebug) {
                     saveCrashLog(thread, throwable)
+                } else {
+                    // Save crash trace to prefs to ask user on next start
+                    val sw = StringWriter()
+                    throwable.printStackTrace(PrintWriter(sw))
+                    prefs.edit()
+                        .putString("last_crash_log", sw.toString())
+                        .putBoolean("pending_crash_report", true)
+                        .apply()
                 }
             } catch (e: Exception) {
                 Log.e("ShieldCall", "Failed to save crash log", e)

@@ -19,6 +19,14 @@ object RetrofitClient {
         appContext = context.applicationContext
     }
 
+    fun isNetworkAvailable(): Boolean {
+        val connectivityManager = appContext?.getSystemService(Context.CONNECTIVITY_SERVICE) as? android.net.ConnectivityManager
+        val network = connectivityManager?.activeNetwork
+        val capabilities = connectivityManager?.getNetworkCapabilities(network)
+        return capabilities != null && (capabilities.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI) || 
+                capabilities.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR))
+    }
+
     private val mockInterceptor = Interceptor { chain ->
         val context = appContext
         val isDebug = context != null && PreferenceManager.getDefaultSharedPreferences(context)

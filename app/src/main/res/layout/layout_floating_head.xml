@@ -1,14 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
-    <ImageView
-        android:id="@+id/img_head"
+    <!-- Ripple/Pulse Effect View (Behind) -->
+    <View
+        android:id="@+id/pulse_view"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@mipmap/ic_launcher_round"
+        android:layout_gravity="center"
         android:background="@drawable/bg_circle_shadow"
-        android:padding="2dp" />
-    
+        android:alpha="0.0" />
+
+    <!-- Main Floating Icon -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_head"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="6dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:strokeWidth="0dp">
+
+        <ImageView
+            android:id="@+id/img_head"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_launcher"
+            android:background="@drawable/bg_circle_shadow"
+            android:scaleType="centerCrop"
+            android:contentDescription="ShieldCall Icon" />
+            
+    </com.google.android.material.card.MaterialCardView>
+
 </FrameLayout>

@@ -44,9 +44,8 @@ class CallReceiver : BroadcastReceiver() {
                     }
                 }
             }
-            TelephonyManager.EXTRA_STATE_IDLE, TelephonyManager.EXTRA_STATE_OFFHOOK -> {
-                val serviceIntent = Intent(context, OverlayService::class.java)
-                context.stopService(serviceIntent)
+            else -> {
+                // Do nothing, let the service continue running
             }
         }
     }

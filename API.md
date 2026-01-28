@@ -1,95 +1,158 @@
-# API Specification for ShieldCall VN Backend
+# ShieldCall VN Backend API Specification
 
-**Base URL (Android Emulator):** `http://10.0.2.2:3000`
-**Base URL (Localhost):** `http://localhost:3000`
+This document provides the technical details for implementing the backend services required by the ShieldCall VN Android application.
+
+**Base URL:** `http://<your-server-ip>:3000`
 
 ---
 
-## 1. Check Phone Number
-Used when an incoming call is detected or manually queried.
+## 1. Session Management
 
+### 1.1 Check Session Status
+Verifies if a session ID is still valid on the server and provides a new one if it has expired.
+
+- **URL:** `/check-session`
 - **Method:** `GET`
-- **Endpoint:** `/check-phone`
-- **Query Parameters:**
-    - `phone` (string): The phone number to check (e.g., `0912345678`).
-
-**Response (JSON):**
+- **Query Params:**
+    - `session_id` (string): The current UUID session ID.
+- **Success Response (200 OK):**
 ```json
 {
-  "risk_level": "RED",  // Options: "GREEN", "YELLOW", "RED", "SAFE"
-  "risk_label": "Cảnh báo: Giả mạo cơ quan chức năng",
+  "is_valid": true,
+  "new_session_id": null 
+}
+```
+- **Expired/Invalid Response (200 OK):**
+```json
+{
+  "is_valid": false,
+  "new_session_id": "new-uuid-v4-string"
+}
+```
+
+---
+
+## 2. Phone Security
+
+### 2.1 Check Phone Number
+Used to determine the risk level of an incoming call.
+
+- **URL:** `/check-phone`
+- **Method:** `GET`
+- **Query Params:**
+    - `phone` (string): The E.164 or local format phone number.
+- **Success Response (200 OK):**
+```json
+{
+  "risk_level": "RED", // Options: "SAFE", "GREEN", "YELLOW", "RED"
+  "risk_label": "Cảnh báo: Giả mạo Công An",
   "recommendations": [
     "Tuyệt đối không nghe máy",
-    "Không cung cấp mã OTP"
+    "Không cung cấp thông tin cá nhân"
   ]
 }
 ```
 
 ---
 
-## 2. Chat with AI Assistant
-Used for the floating chat window.
+## 3. AI Assistant (Chat)
 
+### 3.1 Standard Chat
+- **URL:** `/chat-ai`
 - **Method:** `POST`
-- **Endpoint:** `/chat-ai`
-- **Content-Type:** `application/json`
 - **Body:**
 ```json
 {
-  "user_message": "Tin nhắn này có phải lừa đảo không: 'Chuc mung ban trung thuong SH'?",
-  "context": "general" // Optional: "sms", "zalo", etc.
+  "user_message": "Tin nhắn này lừa đảo không?",
+  "session_id": "uuid-v4-string",
+  "context": "general"
+}
+```
+- **Response:**
+```json
+{
+  "ai_response": "Đây là tin nhắn lừa đảo...",
+  "action_suggested": "BLOCK" // Optional: "NONE", "BLOCK", "REPORT"
 }
 ```
 
-**Response (JSON):**
-```json
-{
-  "ai_response": "Đây là tin nhắn lừa đảo. Không có chương trình nào trao giải qua tin nhắn như vậy.",
-  "action_suggested": "BLOCK" // Optional
-}
-```
+### 3.2 Streaming Chat (SSE)
+Used for real-time text generation.
+
+- **URL:** `/chat-ai-stream`
+- **Method:** `POST`
+- **Body:** Same as 3.1
+- **Response:** `text/event-stream` or raw chunks. Each line should contain a portion of the AI response.
 
 ---
 
-## 3. Analyze Audio (Call Recording)
-Used when the user records a call to check for scam content.
+## 4. Media Analysis
 
+### 4.1 Analyze Multiple Images (OCR & Risk)
+Handles one or more images selected by the user or captured from the screen.
+
+- **URL:** `/analyze-images`
 - **Method:** `POST`
-- **Endpoint:** `/analyze-audio`
 - **Content-Type:** `multipart/form-data`
 - **Form Data:**
-    - `audio`: File (binary, e.g., `.mp3`, `.m4a`, `.wav`).
-    - `phone_number`: String (The phone number being recorded, can be "Unknown").
-
-**Response (JSON):**
+    - `images`: Array of Files (binary, .jpg/.png)
+- **Response:**
 ```json
 {
-  "risk_score": 95, // 0-100
-  "is_scam": true,
-  "transcript": "Tôi là cán bộ điều tra, yêu cầu chị chuyển tiền...",
-  "warning_message": "Phát hiện mạo danh công an."
-}
-```
-
----
-
-## 4. Analyze Image (Screen Capture)
-Used when the user takes a screenshot for OCR and risk analysis.
-
-- **Method:** `POST`
-- **Endpoint:** `/analyze-image`
-- **Content-Type:** `multipart/form-data`
-- **Form Data:**
-    - `image`: File (binary, e.g., `.jpg`, `.png`).
-
-**Response (JSON):**
-```json
-{
-  "ocr_text": "Số tài khoản: 190333... Ngân hàng MB...",
+  "ocr_text": "Số tài khoản: 123456789...",
   "risk_analysis": {
     "is_safe": false,
     "risk_level": "YELLOW",
-    "details": "Phát hiện thông tin chuyển khoản đáng ngờ."
+    "details": "Ảnh chứa thông tin chuyển khoản ngân hàng đáng ngờ."
   }
 }
 ```
+
+### 4.2 Analyze Audio (Speech-to-Text & Risk)
+Analyzes recorded call audio.
+
+- **URL:** `/analyze-audio`
+- **Method:** `POST`
+- **Content-Type:** `multipart/form-data`
+- **Form Data:**
+    - `audio`: File (binary, .mp3/.m4a)
+    - `phone_number`: String (e.g., "0912345678")
+- **Response:**
+```json
+{
+  "risk_score": 85,
+  "is_scam": true,
+  "transcript": "Yêu cầu anh chuyển tiền vào tài khoản tạm giữ...",
+  "warning_message": "Phát hiện kịch bản lừa đảo mạo danh cơ quan điều tra."
+}
+```
+
+---
+
+## 5. Maintenance & Quality
+
+### 5.1 Report Crash
+Submits crash logs from the device when debug mode is disabled.
+
+- **URL:** `/report-crash`
+- **Method:** `POST`
+- **Body:**
+```json
+{
+  "device_info": "Samsung SM-G991B (SDK 34)",
+  "stack_trace": "java.lang.NullPointerException...",
+  "timestamp": 1706450000000
+}
+```
+- **Response (200 OK):**
+```json
+{ "status": "success" }
+```
+
+---
+
+## Technical Implementation Notes for Backend:
+1. **Multipart Data:** Ensure the server correctly handles multiple files with the same key name (`images`) for the `/analyze-images` endpoint.
+2. **Session Persistence:** Store session context (history) in a fast cache like Redis, keyed by `session_id`.
+3. **OCR Engine:** It is recommended to use Tesseract or Google Vision API for high-quality OCR.
+4. **NLP:** Use a LLM (like GPT-4 or Gemini) to analyze transcripts and OCR text for scam patterns.

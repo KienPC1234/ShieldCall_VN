@@ -1,29 +1,32 @@
 package com.sentinel.antiscamvn
 
 import android.graphics.Bitmap
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 
 data class ChatMessage(
     val content: String,
     val isUser: Boolean,
-    val image: Bitmap? = null
+    val images: List<Bitmap> = emptyList()
 )
 
 class ChatAdapter(private val messages: List<ChatMessage>) :
     RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
 
     class ChatViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val container: LinearLayout = view.findViewById(R.id.layout_message_container)
-        val txtContent: TextView = view.findViewById(R.id.txt_message_content)
-        val imgAttachment: ImageView = view.findViewById(R.id.img_attachment)
+        val layoutAi: View = view.findViewById(R.id.layout_ai)
+        val layoutUser: View = view.findViewById(R.id.layout_user)
+        
+        val txtAi: TextView = view.findViewById(R.id.txt_chat_ai)
+        val txtUser: TextView = view.findViewById(R.id.txt_chat_user)
+        
+        val imagesAi: LinearLayout = view.findViewById(R.id.layout_images_ai)
+        val imagesUser: LinearLayout = view.findViewById(R.id.layout_images_user)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
@@ -36,22 +39,48 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
         val message = messages[position]
 
         if (message.isUser) {
-            holder.container.gravity = Gravity.END
-            holder.txtContent.setBackgroundResource(R.drawable.bg_message_user)
-            holder.txtContent.setTextColor(0xFFFFFFFF.toInt())
+            holder.layoutUser.visibility = View.VISIBLE
+            holder.layoutAi.visibility = View.GONE
+            holder.txtUser.text = message.content
+            renderImages(holder.imagesUser, message.images)
         } else {
-            holder.container.gravity = Gravity.START
-            holder.txtContent.setBackgroundResource(R.drawable.bg_message_bot)
-            holder.txtContent.setTextColor(0xFF333333.toInt())
+            holder.layoutAi.visibility = View.VISIBLE
+            holder.layoutUser.visibility = View.GONE
+            holder.txtAi.text = message.content
+            renderImages(holder.imagesAi, message.images)
         }
+    }
 
-        holder.txtContent.text = message.content
+    private fun renderImages(container: LinearLayout, images: List<Bitmap>) {
+        container.removeAllViews()
+        if (images.isNotEmpty()) {
+            container.visibility = View.VISIBLE
+            val previewCount = minOf(images.size, 3)
+            val density = container.resources.displayMetrics.density
+            val size = (100 * density).toInt()
 
-        if (message.image != null) {
-            holder.imgAttachment.visibility = View.VISIBLE
-            holder.imgAttachment.setImageBitmap(message.image)
+            for (i in 0 until previewCount) {
+                val imageView = ImageView(container.context).apply {
+                    layoutParams = LinearLayout.LayoutParams(size, size).apply {
+                        setMargins((4 * density).toInt(), 0, (4 * density).toInt(), 0)
+                    }
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    setImageBitmap(images[i])
+                }
+                container.addView(imageView)
+            }
+
+            if (images.size > 3) {
+                val moreText = TextView(container.context).apply {
+                    text = "+${images.size - 3}"
+                    textSize = 14f
+                    setTextColor(0xFF757575.toInt())
+                    setPadding((8 * density).toInt(), 0, (8 * density).toInt(), 0)
+                }
+                container.addView(moreText)
+            }
         } else {
-            holder.imgAttachment.visibility = View.GONE
+            container.visibility = View.GONE
         }
     }
 

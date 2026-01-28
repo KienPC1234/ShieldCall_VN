@@ -10,6 +10,8 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
 import com.google.gson.annotations.SerializedName
+import okhttp3.ResponseBody
+import retrofit2.http.Streaming
 
 // --- Data Models ---
 
@@ -23,6 +25,7 @@ data class RiskResponse(
 // 2. Chat Request & Response
 data class ChatRequest(
     @SerializedName("user_message") val userMessage: String,
+    @SerializedName("session_id") val sessionId: String,
     @SerializedName("context") val context: String = "general"
 )
 
@@ -51,9 +54,25 @@ data class RiskDetail(
     @SerializedName("details") val details: String
 )
 
+// 5. Crash Report
+data class CrashReport(
+    @SerializedName("device_info") val deviceInfo: String,
+    @SerializedName("stack_trace") val stackTrace: String,
+    @SerializedName("timestamp") val timestamp: Long = System.currentTimeMillis()
+)
+
+data class SessionStatusResponse(
+    @SerializedName("is_valid") val isValid: Boolean,
+    @SerializedName("new_session_id") val newSessionId: String? = null
+)
+
 // --- API Interface ---
 
 interface ApiService {
+    // 0. Session Management
+    @GET("check-session")
+    fun checkSession(@Query("session_id") sessionId: String): Call<SessionStatusResponse>
+
     // 1. Check Phone Number
     @GET("check-phone")
     fun checkPhoneNumber(@Query("phone") phoneNumber: String): Call<RiskResponse>
@@ -61,6 +80,11 @@ interface ApiService {
     // 2. Chat with AI
     @POST("chat-ai")
     fun chatWithAI(@Body request: ChatRequest): Call<ChatResponse>
+
+    // 2b. Chat with AI (Stream)
+    @Streaming
+    @POST("chat-ai-stream")
+    fun chatWithAIStream(@Body request: ChatRequest): Call<ResponseBody>
 
     // 3. Upload Audio for Analysis (Multipart)
     @Multipart
@@ -70,10 +94,21 @@ interface ApiService {
         @Part("phone_number") phoneNumber: RequestBody
     ): Call<AudioAnalysisResponse>
 
-    // 4. Upload Image for Analysis (Multipart)
+    // 4. Upload Image for Analysis (Multipart) - Single
     @Multipart
     @POST("analyze-image")
     fun analyzeImage(
         @Part image: MultipartBody.Part
     ): Call<ImageAnalysisResponse>
+
+    // 4b. Upload Multiple Images
+    @Multipart
+    @POST("analyze-images")
+    fun analyzeImages(
+        @Part images: List<MultipartBody.Part>
+    ): Call<ImageAnalysisResponse>
+
+    // 5. Report Crash
+    @POST("report-crash")
+    fun reportCrash(@Body report: CrashReport): Call<ResponseBody>
 }

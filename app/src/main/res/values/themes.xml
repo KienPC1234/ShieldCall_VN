@@ -1,12 +1,18 @@
-<resources>
-    <style name="Theme.ShieldCallVN" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">#2196F3</item>
-        <item name="colorPrimaryVariant">#1976D2</item>
-        <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorSecondary">#FFC107</item>
-        <item name="colorOnSecondary">#000000</item>
-        
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.ShieldCallVN" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/shield_primary</item>
+        <item name="colorPrimaryVariant">@color/shield_primary_container</item>
+        <item name="colorOnPrimary">@color/shield_on_primary</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/shield_secondary</item>
+        <item name="colorSecondaryVariant">@color/shield_secondary_container</item>
+        <item name="colorOnSecondary">@color/shield_on_secondary</item>
+        <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.ShieldCallVN.NoActionBar">
@@ -14,7 +20,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.Translucent" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.Translucent" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowIsTranslucent">true</item>
@@ -24,5 +30,8 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <style name="Theme.ShieldCallVN.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="ShapeAppearance.ShieldCall.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
 </resources>

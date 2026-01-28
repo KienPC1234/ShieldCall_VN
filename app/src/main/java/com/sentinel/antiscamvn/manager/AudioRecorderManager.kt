@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.media.MediaRecorder
 import android.os.Build
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import java.io.File
@@ -22,18 +23,27 @@ class AudioRecorderManager(private val context: Context) {
     var onTimerUpdate: ((String) -> Unit)? = null
 
     @SuppressLint("MissingPermission") // Quyền đã được check ở Activity/Service
-    fun startRecording(onStart: () -> Unit, onError: (String) -> Unit) {
-        audioFile = File(context.externalCacheDir, "record_${System.currentTimeMillis()}.mp3")
+    fun startRecording(debugMode: Boolean = false, onStart: () -> Unit, onError: (String) -> Unit) {
+        val fileName = "ShieldCall_record_${System.currentTimeMillis()}.mp3"
+        
+        audioFile = if (debugMode) {
+            val downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            File(downloadDir, fileName)
+        } else {
+            File(context.externalCacheDir, fileName)
+        }
         
         mediaRecorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             MediaRecorder(context)
         } else {
+            @Suppress("DEPRECATION")
             MediaRecorder()
         }
 
         try {
             mediaRecorder?.apply {
-                setAudioSource(MediaRecorder.AudioSource.MIC)
+                // VOICE_COMMUNICATION thường bắt được âm thanh 2 chiều tốt hơn MIC trên nhiều dòng máy
+                setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
                 setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
                 setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
                 setOutputFile(audioFile?.absolutePath)

@@ -9,12 +9,14 @@ import android.hardware.display.VirtualDisplay
 import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import java.io.File
 import java.io.FileOutputStream
+import androidx.core.graphics.createBitmap
 
 class ScreenCaptureManager(private val context: Context) {
 
@@ -26,7 +28,7 @@ class ScreenCaptureManager(private val context: Context) {
     var onCaptureSuccess: ((File, Bitmap) -> Unit)? = null
     var onError: ((String) -> Unit)? = null
 
-    fun startCapture(resultCode: Int, data: Intent, windowManager: WindowManager) {
+    fun startProjection(resultCode: Int, data: Intent, windowManager: WindowManager) {
         val mpManager = context.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
         mediaProjection = mpManager.getMediaProjection(resultCode, data)
 
@@ -34,18 +36,29 @@ class ScreenCaptureManager(private val context: Context) {
         mediaProjection?.registerCallback(object : MediaProjection.Callback() {
             override fun onStop() {
                 super.onStop()
-                // Handle projection stop if needed
                 stopCapture()
             }
         }, Handler(Looper.getMainLooper()))
 
-        val metrics = DisplayMetrics()
-        windowManager.defaultDisplay.getRealMetrics(metrics)
-        val width = metrics.widthPixels
-        val height = metrics.heightPixels
-        val density = metrics.densityDpi
+        val width: Int
+        val height: Int
+        val density: Int
 
-        imageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 1)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val metrics = windowManager.currentWindowMetrics
+            width = metrics.bounds.width()
+            height = metrics.bounds.height()
+            density = context.resources.displayMetrics.densityDpi
+        } else {
+            val metrics = DisplayMetrics()
+            @Suppress("DEPRECATION")
+            windowManager.defaultDisplay.getRealMetrics(metrics)
+            width = metrics.widthPixels
+            height = metrics.heightPixels
+            density = metrics.densityDpi
+        }
+
+        imageReader = ImageReader.newInstance(width, height, PixelFormat.RGBA_8888, 2)
 
         virtualDisplay = mediaProjection?.createVirtualDisplay(
             "ScreenCapture",
@@ -57,18 +70,29 @@ class ScreenCaptureManager(private val context: Context) {
             null,
             null
         )
+    }
 
-        // Đợi màn hình render xong mới chụp (1 giây)
-        Handler(Looper.getMainLooper()).postDelayed({
-            processImage(width)
-        }, 1000)
+    fun captureFrame(windowManager: WindowManager) {
+        val metrics = DisplayMetrics()
+        windowManager.defaultDisplay.getRealMetrics(metrics)
+        val width = metrics.widthPixels
+        processImage(width)
     }
 
     private fun processImage(width: Int) {
         // Xử lý trên Background Thread
         Thread {
             try {
-                val image = imageReader?.acquireLatestImage()
+                // Đợi một chút để ImageReader có dữ liệu nếu vừa khởi tạo
+                Thread.sleep(100)
+                
+                var image = imageReader?.acquireLatestImage()
+                // Retry nếu null
+                if (image == null) {
+                    Thread.sleep(200)
+                    image = imageReader?.acquireLatestImage()
+                }
+
                 if (image != null) {
                     val planes = image.planes
                     val buffer = planes[0].buffer
@@ -76,7 +100,7 @@ class ScreenCaptureManager(private val context: Context) {
                     val rowStride = planes[0].rowStride
                     val rowPadding = rowStride - pixelStride * width
 
-                    val bitmap = Bitmap.createBitmap(width + rowPadding / pixelStride, image.height, Bitmap.Config.ARGB_8888)
+                    val bitmap = createBitmap(width + rowPadding / pixelStride, image.height)
                     bitmap.copyPixelsFromBuffer(buffer)
 
                     // Crop phần thừa
@@ -89,16 +113,17 @@ class ScreenCaptureManager(private val context: Context) {
                     finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos)
                     fos.close()
 
-                    stopCapture()
-
                     // Trả kết quả về Main Thread
                     Handler(Looper.getMainLooper()).post {
                         onCaptureSuccess?.invoke(file, finalBitmap)
                     }
+                } else {
+                     Handler(Looper.getMainLooper()).post {
+                        onError?.invoke("Không lấy được hình ảnh (null)")
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                stopCapture()
                 Handler(Looper.getMainLooper()).post {
                     onError?.invoke(e.message ?: "Capture failed")
                 }
