@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Environment
 import android.util.Log
 import androidx.preference.PreferenceManager
+import com.sentinel.antiscamvn.utils.LogManager
 import java.io.File
 import java.io.FileWriter
 import java.io.PrintWriter
@@ -17,6 +18,7 @@ class ShieldCallApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        LogManager.init(this)
         setupGlobalCrashHandler()
     }
 

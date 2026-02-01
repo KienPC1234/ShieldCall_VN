@@ -1,42 +1,60 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="TÍNH NĂNG CHÍNH">
-
-        <SwitchPreferenceCompat
-            app:key="protection_enabled"
-            app:title="Bảo vệ cuộc gọi"
-            app:summary="Bật/tắt hiển thị cảnh báo khi có cuộc gọi đến."
-            app:defaultValue="true" />
-
-        <SwitchPreferenceCompat
-            app:key="parent_mode_enabled"
-            app:title="Chế độ Ba/Mẹ"
-            app:summary="Giao diện chữ to, nút bấm đơn giản, dễ dùng."
-            app:defaultValue="false" />
-
+    <PreferenceCategory app:title="Giao diện">
+        <ListPreference
+            app:defaultValue="system"
+            app:entries="@array/theme_entries"
+            app:entryValues="@array/theme_values"
+            app:key="theme_mode"
+            app:summary="%s"
+            app:title="Chế độ giao diện"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="HỆ THỐNG">
+    <PreferenceCategory app:title="Bảo vệ">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="protection_enabled"
+            app:summary="Tự động cảnh báo cuộc gọi rác &amp; lừa đảo"
+            app:title="Bảo vệ cuộc gọi" />
 
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="high_sensitivity"
+            app:summary="Tăng cường khả năng phát hiện (có thể báo nhầm)"
+            app:title="Độ nhạy cao" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="parent_mode_enabled"
+            app:summary="Giao diện đơn giản cho người lớn tuổi"
+            app:title="Chế độ Phụ huynh" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Hệ thống &amp; Gỡ lỗi">
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="debug_mode"
+            app:summary="Ghi log chi tiết để kiểm tra lỗi"
+            app:title="Chế độ Debug" />
+
+        <Preference
+            app:key="view_logs"
+            app:summary="Xem lịch sử hoạt động của ứng dụng"
+            app:title="Xem Log ứng dụng" />
+            
         <Preference
             app:key="manage_permissions"
             app:title="Quản lý quyền"
-            app:summary="Mở lại màn hình cấp quyền cho ứng dụng." />
-
+            app:summary="Kiểm tra lại quyền Overlay &amp; Call" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="KHÁC">
-
-        <Preference
-            app:key="feedback"
-            app:title="Góp ý &amp; Báo lỗi"
-            app:summary="Gửi email phản hồi cho đội ngũ phát triển." />
-
+    <PreferenceCategory app:title="Thông tin">
         <Preference
             app:key="version"
-            app:title="Phiên bản"
-            app:summary="1.0.0" />
-
+            app:summary="1.0.0"
+            app:title="Phiên bản" />
     </PreferenceCategory>
 
 </PreferenceScreen>

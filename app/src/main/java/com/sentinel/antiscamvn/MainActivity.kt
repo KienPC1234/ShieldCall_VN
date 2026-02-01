@@ -1,86 +1,117 @@
 package com.sentinel.antiscamvn
 
+import android.app.role.RoleManager
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.view.View
-import android.webkit.*
+import android.provider.Telephony
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var webView: WebView
-    private lateinit var loadingLayout: View
-    private val startUrl = "https://www.google.com" 
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        
+        // Apply Theme
+        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        val themeMode = prefs.getString("theme_mode", "system")
+        val nightMode = when (themeMode) {
+            "light" -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+            "dark" -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+            else -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(nightMode)
+        
         setContentView(R.layout.activity_main)
 
-        webView = findViewById(R.id.webView)
-        loadingLayout = findViewById(R.id.loadingLayout)
-
-        setupWebView()
-        webView.loadUrl(startUrl)
-
-        // Handle Back Button for WebView
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (webView.canGoBack()) {
-                    webView.goBack()
-                } else {
-                    finish()
-                }
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
+        
+        if (navHostFragment != null) {
+            navController = navHostFragment.navController
+            val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+            
+            // Sử dụng cách thủ công để tránh lỗi thư viện NavigationUI nếu có lằng nhằng
+            bottomNav.setOnItemSelectedListener { item ->
+                NavigationUI.onNavDestinationSelected(item, navController)
+                true
             }
-        })
+            
+            // Đảm bảo BottomNav cập nhật khi NavController chuyển hướng (ví dụ qua code)
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                bottomNav.menu.findItem(destination.id)?.isChecked = true
+            }
+        }
 
-        // Auto Start Overlay Service
+        checkDefaultSmsApp()
         startOverlayService()
+        
+        handleSmsIntent(intent)
+    }
+    
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleSmsIntent(intent)
+    }
+    
+    private fun handleSmsIntent(intent: Intent?) {
+        val sender = intent?.getStringExtra("sender_address")
+        val draftBody = intent?.getStringExtra("draft_body")
+        
+        if (!sender.isNullOrEmpty()) {
+             // Navigate to SmsDetailFragment via global action or manually
+             try {
+                 // Ensure proper back stack: Home -> SmsFragment -> SmsDetailFragment
+                 navController.popBackStack(R.id.nav_home, false)
+                 navController.navigate(R.id.nav_sms)
+                 
+                 val bundle = Bundle().apply { 
+                     putString("address", sender)
+                     if (!draftBody.isNullOrEmpty()) putString("draft_body", draftBody)
+                 }
+                 navController.navigate(R.id.nav_sms_detail, bundle)
+             } catch (e: Exception) { e.printStackTrace() }
+        }
+    }
+
+    private fun checkDefaultSmsApp() {
+        if (Telephony.Sms.getDefaultSmsPackage(this) != packageName) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val roleManager = getSystemService(RoleManager::class.java)
+                if (roleManager != null && roleManager.isRoleAvailable(RoleManager.ROLE_SMS)) {
+                    if (!roleManager.isRoleHeld(RoleManager.ROLE_SMS)) {
+                        @Suppress("DEPRECATION")
+                        startActivityForResult(roleManager.createRequestRoleIntent(RoleManager.ROLE_SMS), 101)
+                    }
+                }
+            } else {
+                val intent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
+                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName)
+                startActivity(intent)
+            }
+        }
     }
 
     private fun startOverlayService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
-            Toast.makeText(this, "Vui lòng cấp quyền hiển thị cho ShieldCall", Toast.LENGTH_LONG).show()
-            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, android.net.Uri.parse("package:$packageName")))
             return
         }
 
         val serviceIntent = Intent(this, OverlayService::class.java).apply {
-            action = "SHOW_HEAD"
+            action = OverlayService.ACTION_SHOW_HEAD
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent)
         } else {
             startService(serviceIntent)
-        }
-    }
-
-    private fun setupWebView() {
-        webView.settings.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            useWideViewPort = true
-            loadWithOverviewMode = true
-            databaseEnabled = true
-            cacheMode = WebSettings.LOAD_DEFAULT
-        }
-
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                loadingLayout.visibility = View.VISIBLE
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                loadingLayout.visibility = View.GONE
-            }
         }
     }
 }

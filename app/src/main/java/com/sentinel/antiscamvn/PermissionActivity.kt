@@ -50,6 +50,14 @@ class PermissionActivity : AppCompatActivity() {
             }
             requestCallPermissionsLauncher.launch(permissions.toTypedArray())
         }
+
+        btnGrantOverlayPermission.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+                startActivity(intent)
+                android.widget.Toast.makeText(this, "Vui lòng tìm ShieldCallVN và bật 'Cho phép vẽ trên ứng dụng khác'", android.widget.Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun onResume() {

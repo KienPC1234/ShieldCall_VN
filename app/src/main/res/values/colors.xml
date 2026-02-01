@@ -1,34 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Seed: #1A73E8 (Google Blue) -->
+    <!-- M3 Light Colors -->
+    <color name="md_theme_light_primary">#005FB0</color>
+    <color name="md_theme_light_onPrimary">#FFFFFF</color>
+    <color name="md_theme_light_primaryContainer">#D4E3FF</color>
+    <color name="md_theme_light_onPrimaryContainer">#001C3A</color>
+    <color name="md_theme_light_secondary">#006684</color>
+    <color name="md_theme_light_onSecondary">#FFFFFF</color>
+    <color name="md_theme_light_secondaryContainer">#BDE9FF</color>
+    <color name="md_theme_light_onSecondaryContainer">#001F2A</color>
+    <color name="md_theme_light_tertiary">#AE2B59</color>
+    <color name="md_theme_light_onTertiary">#FFFFFF</color>
+    <color name="md_theme_light_tertiaryContainer">#FFD9DF</color>
+    <color name="md_theme_light_onTertiaryContainer">#3F0019</color>
+    <color name="md_theme_light_error">#BA1A1A</color>
+    <color name="md_theme_light_errorContainer">#FFDAD6</color>
+    <color name="md_theme_light_onError">#FFFFFF</color>
+    <color name="md_theme_light_onErrorContainer">#410002</color>
+    <color name="md_theme_light_background">#FDFCFF</color>
+    <color name="md_theme_light_onBackground">#1A1C1E</color>
+    <color name="md_theme_light_surface">#FDFCFF</color>
+    <color name="md_theme_light_onSurface">#1A1C1E</color>
+    <color name="md_theme_light_surfaceVariant">#E0E2EC</color>
+    <color name="md_theme_light_onSurfaceVariant">#43474E</color>
+    <color name="md_theme_light_outline">#74777F</color>
+    <color name="md_theme_light_inverseOnSurface">#F1F0F4</color>
+    <color name="md_theme_light_inverseSurface">#2F3033</color>
+    <color name="md_theme_light_inversePrimary">#A4C9FF</color>
+    <color name="md_theme_light_shadow">#000000</color>
+    <color name="md_theme_light_surfaceTint">#005FB0</color>
+    <color name="md_theme_light_outlineVariant">#C4C6CF</color>
+    <color name="md_theme_light_scrim">#000000</color>
 
-    <!-- ShieldCall Brand Colors -->
-    <color name="shield_primary">#1A73E8</color> <!-- Google Blue-ish -->
-    <color name="shield_on_primary">#FFFFFF</color>
-    <color name="shield_primary_container">#D1E4FF</color>
-    <color name="shield_on_primary_container">#001D36</color>
-
-    <color name="shield_secondary">#00E5FF</color> <!-- Cyan Accent -->
-    <color name="shield_on_secondary">#000000</color>
-    <color name="shield_secondary_container">#B3EBFF</color>
-
-    <color name="shield_tertiary">#FF4081</color> <!-- Pink warning -->
+    <!-- Chat Specific -->
+    <color name="chat_bubble_sent">#D4E3FF</color> <!-- Primary Container -->
+    <color name="chat_text_sent">#001C3A</color> <!-- On Primary Container -->
+    <color name="chat_bubble_received">#F2F2F7</color> <!-- Surface Variant / Light Grey -->
+    <color name="chat_text_received">#1A1C1E</color> <!-- On Surface -->
     
-    <color name="shield_background">#F8FDFF</color>
-    <color name="shield_surface">#FFFFFF</color>
-    <color name="shield_on_surface">#191C1E</color>
-    <color name="shield_surface_variant">#E1E2EC</color>
-    <color name="shield_outline">#74777F</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 
-    <color name="shield_error">#BA1A1A</color>
-    <color name="shield_success">#4CAF50</color>
+    <!-- Shield Specific Colors (Mapped to MD3) -->
+    <color name="shield_primary">@color/md_theme_light_primary</color>
+    <color name="shield_on_primary">@color/md_theme_light_onPrimary</color>
+    <color name="shield_secondary">@color/md_theme_light_secondary</color>
+    <color name="shield_background">@color/md_theme_light_background</color>
+    <color name="shield_surface">@color/md_theme_light_surface</color>
+    <color name="shield_error">@color/md_theme_light_error</color>
     
-    <color name="bg_user_chat">#E3F2FD</color>
-    <color name="bg_ai_chat">#F5F5F5</color>
+    <color name="bg_ai_chat">@color/chat_bubble_received</color>
+    <color name="bg_user_chat">@color/chat_bubble_sent</color>
+
+    <color name="shield_on_surface">@color/md_theme_light_onSurface</color>
+    <color name="shield_primary_container">@color/md_theme_light_primaryContainer</color>
+    <color name="shield_on_primary_container">@color/md_theme_light_onPrimaryContainer</color>
+    <color name="shield_outline">@color/md_theme_light_outline</color>
+    <color name="shield_surface_variant">@color/md_theme_light_surfaceVariant</color>
+    <color name="shield_success">#2E7D32</color> <!-- Green -->
 </resources>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.sentinel.antiscamvn.ui.HomeFragment"
+        android:label="Khám phá"
+        tools:layout="@layout/fragment_webview" />
+
+    <fragment
+        android:id="@+id/nav_sms"
+        android:name="com.sentinel.antiscamvn.ui.SmsFragment"
+        android:label="Tin nhắn"
+        tools:layout="@layout/fragment_sms">
+        <action
+            android:id="@+id/action_sms_to_detail"
+            app:destination="@id/nav_sms_detail" />
+        <action
+            android:id="@+id/action_sms_to_profile"
+            app:destination="@id/nav_profile" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.sentinel.antiscamvn.ui.ProfileFragment"
+        android:label="Hồ sơ cá nhân"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/nav_sms_detail"
+        android:name="com.sentinel.antiscamvn.ui.SmsDetailFragment"
+        android:label="{address}"
+        tools:layout="@layout/fragment_sms_detail">
+        <argument
+            android:name="address"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_chatbot"
+        android:name="com.sentinel.antiscamvn.ui.ChatbotFragment"
+        android:label="AI Assistant"
+        tools:layout="@layout/fragment_webview" />
+
+    <fragment
+        android:id="@+id/nav_contacts"
+        android:name="com.sentinel.antiscamvn.ui.PlaceholderFragment"
+        android:label="Danh bạ" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.sentinel.antiscamvn.ui.SettingsFragment"
+        android:label="Cài đặt"
+        tools:layout="@layout/activity_settings" />
+
+</navigation>

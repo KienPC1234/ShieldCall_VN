@@ -594,9 +594,9 @@ class OverlayService : Service() {
     }
 
     private fun createNotification(): Notification {
-        val intent = PendingIntent.getActivity(this, 0, Intent(this, SettingsActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        return Notification.Builder(this, CHANNEL_ID).setContentTitle("ShieldCall").setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentText("Bấm để mở cài đặt và tắt thông báo này để tắt ứng dụng").setContentIntent(intent).build()
+        val intent = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        return Notification.Builder(this, CHANNEL_ID).setContentTitle("ShieldCall đang chạy").setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentText("Bấm để mở ứng dụng").setContentIntent(intent).build()
     }
 
     private fun createNotificationChannel() {

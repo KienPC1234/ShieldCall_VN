@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="12dp"
+    android:paddingTop="2dp"
+    android:paddingEnd="40dp"
+    android:paddingBottom="2dp">
+
+    <TextView
+        android:id="@+id/txt_message_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_message_received"
+        android:paddingStart="16dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/chat_text_received"
+        android:textSize="16sp"
+        android:textIsSelectable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="wrap"
+        app:layout_constraintWidth_percent="0.75"
+        tools:text="Hello, this is a received message." />
+
+    <TextView
+        android:id="@+id/txt_message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/md_theme_light_outline"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/txt_message_body"
+        app:layout_constraintTop_toBottomOf="@+id/txt_message_body"
+        tools:text="12:30" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Danh sách Log (Tối đa 15 file)"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_log_files"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/txt_log_content_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nội dung:"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"/>
+
+    <ScrollView
+        android:id="@+id/scroll_log_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:background="#EEEEEE"
+        android:padding="8dp"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/txt_log_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:textSize="12sp"
+            android:textColor="#000000"/>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btn_copy_log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Copy toàn bộ Log"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btn_close_log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Đóng"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingStart="16dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="12dp">
+
+    <!-- Avatar -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_avatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/md_theme_light_secondaryContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/txt_avatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="A"
+            android:textColor="@color/md_theme_light_onSecondaryContainer"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:text="A" />
+
+        <ImageView
+            android:id="@+id/img_avatar_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            tools:visibility="gone" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- Header Row: Sender + Date -->
+    <TextView
+        android:id="@+id/txt_sender"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/md_theme_light_onSurface"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/txt_preview"
+        app:layout_constraintEnd_toStartOf="@+id/txt_date"
+        app:layout_constraintStart_toEndOf="@+id/card_avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Google OTP" />
+
+    <ImageView
+        android:id="@+id/img_verified"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="4dp"
+        android:src="@drawable/ic_verified"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_sender"
+        app:layout_constraintStart_toEndOf="@+id/txt_sender"
+        app:layout_constraintTop_toTopOf="@+id/txt_sender"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/txt_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/md_theme_light_onSurfaceVariant"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txt_sender"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="12:30" />
+
+    <!-- Preview Row -->
+    <TextView
+        android:id="@+id/txt_preview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/md_theme_light_onSurfaceVariant"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/txt_unread_count"
+        app:layout_constraintStart_toStartOf="@+id/txt_sender"
+        app:layout_constraintTop_toBottomOf="@+id/txt_sender"
+        tools:text="Your verification code is 123456. Do not share this with anyone." />
+
+    <!-- Unread Badge -->
+    <TextView
+        android:id="@+id/txt_unread_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_unread_badge"
+        android:gravity="center"
+        android:minWidth="20dp"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:text="2"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_preview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txt_preview"
+        tools:visibility="visible" />
+
+    <!-- Action Button (Hidden by default, used for popup menu) -->
+    <ImageButton
+        android:id="@+id/btn_more"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_menu_more"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
