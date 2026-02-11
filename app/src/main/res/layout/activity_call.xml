@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/call_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <!-- Caller Info -->
+    <ImageView
+        android:id="@+id/img_caller_avatar"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="80dp"
+        android:src="@android:drawable/sym_def_app_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_caller_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Unknown"
+        android:textColor="@color/white"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_caller_avatar" />
+
+    <TextView
+        android:id="@+id/txt_call_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Calling..."
+        android:textColor="#CCCCCC"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_caller_name" />
+
+    <!-- AI Warning Area -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="#D32F2F"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintTop_toBottomOf="@id/txt_call_status">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CẢNH BÁO LỪA ĐẢO"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txt_warning_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Phát hiện nội dung đáng ngờ..."
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Controls Container -->
+    <LinearLayout
+        android:id="@+id/layout_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Mute -->
+        <ImageButton
+            android:id="@+id/btn_mute"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/bg_circle_shadow"
+            android:src="@android:drawable/ic_lock_silent_mode_off"
+            android:padding="16dp"
+            app:tint="@color/white" />
+
+        <!-- Hangup -->
+        <ImageButton
+            android:id="@+id/btn_end_call"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/bg_circle_primary"
+            android:backgroundTint="#F44336"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:padding="16dp"
+            app:tint="@color/white" />
+
+        <!-- Speaker -->
+        <ImageButton
+            android:id="@+id/btn_speaker"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/bg_circle_shadow"
+            android:src="@android:drawable/ic_lock_silent_mode"
+            android:padding="16dp"
+            app:tint="@color/white" />
+
+    </LinearLayout>
+
+    <!-- Incoming Call Controls -->
+    <LinearLayout
+        android:id="@+id/layout_incoming_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_reject"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/bg_circle_primary"
+            android:backgroundTint="#F44336"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:padding="16dp"
+            app:tint="@color/white"
+            android:layout_marginEnd="48dp"/>
+
+        <ImageButton
+            android:id="@+id/btn_answer"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/bg_circle_primary"
+            android:backgroundTint="#4CAF50"
+            android:src="@android:drawable/ic_menu_call"
+            android:padding="16dp"
+            app:tint="@color/white"
+            android:layout_marginStart="48dp"/>
+    </LinearLayout>
+
+    <!-- Analyze Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_analyze"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="Bật Phân Tích AI"
+        app:icon="@drawable/ic_verified"
+        app:backgroundTint="#2196F3"
+        app:layout_constraintBottom_toTopOf="@id/layout_controls"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,6 +15,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.PixelFormat
 import android.os.Build
+import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
@@ -53,6 +54,7 @@ class OverlayService : Service() {
         const val ACTION_START_SCREEN_CAPTURE = "com.sentinel.antiscamvn.START_SCREEN_CAPTURE"
         const val ACTION_STOP_SERVICE = "com.sentinel.antiscamvn.STOP_SERVICE"
         const val ACTION_SHOW_ICON = "com.sentinel.antiscamvn.SHOW_ICON"
+        const val ACTION_HIDE_OVERLAY = "com.sentinel.antiscamvn.HIDE_OVERLAY"
     }
 
     private lateinit var windowManager: WindowManager
@@ -108,6 +110,12 @@ class OverlayService : Service() {
                             }
                         }
                         Handler(Looper.getMainLooper()).postDelayed({ updatePendingImagesUI() }, 200)
+                    }
+                }
+                AudioPickerActivity.ACTION_AUDIO_PICKED -> {
+                    val paths = intent.getStringArrayListExtra(AudioPickerActivity.EXTRA_AUDIO_PATHS)
+                    if (!paths.isNullOrEmpty()) {
+                        uploadMultipleAudios(paths)
                     }
                 }
                 ACTION_SHOW_ICON -> showFloatingIcon()
@@ -185,7 +193,17 @@ class OverlayService : Service() {
                     showCaptureBubble()
                 }
             }
-            ACTION_SHOW_ICON -> showFloatingIcon()
+            ACTION_SHOW_ICON -> {
+                showFloatingIcon()
+                Toast.makeText(this, "Đang trong cuộc gọi. Chạm icon để bật ghi âm bảo vệ.", Toast.LENGTH_LONG).show()
+            }
+            ACTION_HIDE_OVERLAY -> {
+                removeHead()
+                removeMenu()
+                removeWindow()
+                removeRecordingUI()
+                removeCaptureBubble()
+            }
             else -> if (!isIconHidden) showHead()
         }
 
@@ -299,6 +317,11 @@ class OverlayService : Service() {
             val intent = Intent(this, ScreenCaptureActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
             startActivity(intent)
         }
+        menuView?.findViewById<View>(R.id.btn_analyze_file)?.setOnClickListener {
+            removeMenu()
+            val intent = Intent(this, AudioPickerActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
+            startActivity(intent)
+        }
         menuView?.findViewById<View>(R.id.btn_hide)?.setOnClickListener { hideFloatingIcon() }
         
         windowManager.addView(menuView, paramsMenu)
@@ -306,12 +329,13 @@ class OverlayService : Service() {
 
     private fun showWindow(feature: Feature) {
         if (windowView != null && windowView!!.isAttachedToWindow) removeWindow()
-        windowView = LayoutInflater.from(getThemedContext()).inflate(R.layout.layout_window_chat, null)
+        
+        val layoutId = if (feature == Feature.WARNING) R.layout.layout_call_overlay else R.layout.layout_window_chat
+        windowView = LayoutInflater.from(getThemedContext()).inflate(layoutId, null)
         
         val flags = if (feature == Feature.WARNING) {
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
         } else {
-            // Allow focus for Chat so user can type
             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
         }
 
@@ -330,8 +354,23 @@ class OverlayService : Service() {
             if (feature == Feature.WARNING) y = 100 
         }
 
-        setupWindowUI(windowView!!, feature)
+        if (feature == Feature.WARNING) {
+            setupWarningWindow(windowView!!)
+        } else {
+            setupWindowUI(windowView!!, feature)
+        }
         windowManager.addView(windowView, paramsWindow)
+    }
+    
+    private fun setupWarningWindow(view: View) {
+        view.findViewById<View>(R.id.btnClose)?.setOnClickListener { removeWindow(); showHead() }
+        view.findViewById<View>(R.id.btnDetails)?.setOnClickListener { 
+            removeWindow()
+            showWindow(Feature.RESULT) 
+        }
+        // Initial state
+        view.findViewById<TextView>(R.id.txtPhoneNumber)?.text = "Đang kiểm tra..."
+        view.findViewById<TextView>(R.id.txtWarningContent)?.text = "Đang phân tích số điện thoại..."
     }
 
     private fun setupWindowUI(view: View, feature: Feature) {
@@ -357,11 +396,70 @@ class OverlayService : Service() {
                 view.findViewById<View>(R.id.layout_loading).visibility = View.VISIBLE
                 setupChat(view)
             }
-            Feature.WARNING -> {
-                view.findViewById<TextView>(R.id.txt_title).text = "Kiểm tra cuộc gọi..."
-                view.findViewById<View>(R.id.layout_loading).visibility = View.VISIBLE
-                view.findViewById<View>(R.id.layout_input).visibility = View.GONE
-            }
+            else -> {}
+        }
+    }
+    
+    // --- STT ---
+    private var speechRecognizer: android.speech.SpeechRecognizer? = null
+    
+    private fun startSpeechToText() {
+        if (speechRecognizer != null) return
+        val intent = Intent(android.speech.RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE_MODEL, android.speech.RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        intent.putExtra(android.speech.RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+        intent.putExtra(android.speech.RecognizerIntent.EXTRA_LANGUAGE, "vi-VN")
+
+        Handler(Looper.getMainLooper()).post {
+            try {
+                speechRecognizer = android.speech.SpeechRecognizer.createSpeechRecognizer(this)
+                speechRecognizer?.setRecognitionListener(object : android.speech.RecognitionListener {
+                    override fun onReadyForSpeech(params: Bundle?) {}
+                    override fun onBeginningOfSpeech() {}
+                    override fun onRmsChanged(rmsdB: Float) {}
+                    override fun onBufferReceived(buffer: ByteArray?) {}
+                    override fun onEndOfSpeech() {}
+                    override fun onError(error: Int) {
+                        // Restart on error if recording
+                        if (audioManager.isRecording()) {
+                            // Simple retry or ignore
+                        }
+                    }
+                    override fun onResults(results: Bundle?) {
+                        val matches = results?.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION)
+                        if (!matches.isNullOrEmpty()) {
+                            updateCaption(matches[0])
+                        }
+                        // Continue listening
+                        if (audioManager.isRecording()) startSpeechToText()
+                    }
+                    override fun onPartialResults(partialResults: Bundle?) {
+                        val matches = partialResults?.getStringArrayList(android.speech.SpeechRecognizer.RESULTS_RECOGNITION)
+                        if (!matches.isNullOrEmpty()) {
+                            updateCaption(matches[0])
+                        }
+                    }
+                    override fun onEvent(eventType: Int, params: Bundle?) {}
+                })
+                speechRecognizer?.startListening(intent)
+                recordingTimerView?.findViewById<TextView>(R.id.txt_live_caption)?.visibility = View.VISIBLE
+            } catch (e: Exception) { e.printStackTrace() }
+        }
+    }
+    
+    private fun stopSpeechToText() {
+        Handler(Looper.getMainLooper()).post {
+            try {
+                speechRecognizer?.stopListening()
+                speechRecognizer?.destroy()
+                speechRecognizer = null
+            } catch (e: Exception) {}
+        }
+    }
+    
+    private fun updateCaption(text: String) {
+        if (recordingTimerView?.isAttachedToWindow == true) {
+            recordingTimerView?.findViewById<TextView>(R.id.txt_live_caption)?.text = text
         }
     }
 
@@ -479,11 +577,30 @@ class OverlayService : Service() {
 
     private fun checkPhoneNumber(phone: String) {
         if (!RetrofitClient.isNetworkAvailable()) return
+        
+        // Show loading state if layout is warning
+        val txtPhone = windowView?.findViewById<TextView>(R.id.txtPhoneNumber)
+        if (txtPhone != null) txtPhone.text = phone
+        
         RetrofitClient.instance.checkPhoneNumber(phone).enqueue(object : Callback<RiskResponse> {
             override fun onResponse(call: Call<RiskResponse>, response: Response<RiskResponse>) {
                 hideLoading()
-                windowView?.findViewById<TextView>(R.id.txt_title)?.text = "SĐT: $phone"
-                addMessage("Mức độ: ${response.body()?.riskLevel}\n${response.body()?.riskLabel}", false)
+                val body = response.body()
+                
+                // Update Warning Window
+                if (windowView != null && windowView!!.isAttachedToWindow) {
+                     windowView?.findViewById<TextView>(R.id.txtPhoneNumber)?.text = phone
+                     windowView?.findViewById<TextView>(R.id.txtWarningContent)?.text = "${body?.riskLabel}\nMức độ: ${body?.riskLevel}"
+                     
+                     // Optional: Change color based on risk
+                     if (body?.riskLevel == "SAFE") {
+                         windowView?.findViewById<View>(R.id.txtWarningContent)?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this@OverlayService, R.color.safe_tag_background))
+                         (windowView?.findViewById<TextView>(R.id.txtWarningContent))?.setTextColor(androidx.core.content.ContextCompat.getColor(this@OverlayService, R.color.safe_tag_text))
+                     }
+                } else {
+                     // Fallback to chat msg if window changed
+                     addMessage("Mức độ: ${body?.riskLevel}\n${body?.riskLabel}", false)
+                }
             }
             override fun onFailure(call: Call<RiskResponse>, t: Throwable) { hideLoading() }
         })
@@ -491,10 +608,18 @@ class OverlayService : Service() {
 
     private fun startRecordingFlow() {
         removeWindow(); removeMenu(); removeCaptureBubble()
+        
+        Toast.makeText(this, "Vui lòng bật loa ngoài và ở nơi yên tĩnh để ghi âm tốt nhất (Do chính sách Android)", Toast.LENGTH_LONG).show()
+        
         if (!audioManager.isRecording()) {
             val isDebug = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("debug_mode", false)
             try {
-                audioManager.startRecording(debugMode = isDebug, onStart = { showRecordingUI() }, onError = { logError(Exception(it)); showHead() })
+                audioManager.startRecording(debugMode = isDebug, onStart = { 
+                    showRecordingUI()
+                    // Check STT Preference
+                    val sttEnabled = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("stt_enabled", true)
+                    if (sttEnabled) startSpeechToText()
+                }, onError = { logError(Exception(it)); showHead() })
             } catch (e: Exception) { logError(e); showHead() }
         } else showRecordingUI()
     }
@@ -513,6 +638,7 @@ class OverlayService : Service() {
         ).apply { gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL; y = 200 }
 
         recordingStopView?.findViewById<View>(R.id.btn_stop_recording_overlay)?.setOnClickListener {
+             stopSpeechToText()
              val file = audioManager.stopRecording(); removeRecordingUI()
              if (file != null) { uploadAudio(file) } else showHead()
         }
@@ -547,6 +673,35 @@ class OverlayService : Service() {
              } else showHead()
         }
         windowManager.addView(captureBubbleView, paramsCaptureBubble)
+    }
+
+    private fun uploadMultipleAudios(paths: List<String>) {
+        showWindow(Feature.RESULT)
+        windowView?.findViewById<TextView>(R.id.txt_loading_status)?.text = "Đang phân tích ${paths.size} file âm thanh..."
+        
+        paths.forEach { path ->
+            val file = File(path)
+            val requestFile = file.asRequestBody("audio/*".toMediaTypeOrNull())
+            val body = MultipartBody.Part.createFormData("audio", file.name, requestFile)
+            val phoneBody = "UserSelected".toRequestBody("text/plain".toMediaTypeOrNull())
+
+            RetrofitClient.instance.analyzeAudio(body, phoneBody).enqueue(object : Callback<AudioAnalysisResponse> {
+                override fun onResponse(call: Call<AudioAnalysisResponse>, response: Response<AudioAnalysisResponse>) {
+                    val res = response.body()
+                    if (response.isSuccessful && res != null) {
+                        val p = if (res.isScam) "⚠ PHÁT HIỆN LỪA ĐẢO: " else "✅ An toàn: "
+                        addMessage("${file.name}:\n$p${res.warningMessage}\nNội dung: ${res.transcript}", false)
+                    } else {
+                        addMessage("${file.name}: Lỗi phân tích ${response.code()}", false)
+                    }
+                    hideLoading()
+                }
+                override fun onFailure(call: Call<AudioAnalysisResponse>, t: Throwable) {
+                    addMessage("${file.name}: Lỗi kết nối", false)
+                    hideLoading()
+                }
+            })
+        }
     }
 
     private fun updateAiMessage(idx: Int, txt: String) {

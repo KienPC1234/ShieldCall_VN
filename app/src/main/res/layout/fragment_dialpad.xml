@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="bottom"
+    android:paddingBottom="32dp">
+
+    <TextView
+        android:id="@+id/txt_input_number"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnSurface"
+        android:hint="Nhập số..."
+        android:ellipsize="start"
+        android:maxLines="1"
+        android:padding="24dp"/>
+
+    <GridLayout
+        android:id="@+id/dial_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:rowCount="4"
+        android:alignmentMode="alignMargins"
+        android:layout_gravity="center_horizontal"
+        android:padding="16dp">
+
+        <!-- Row 1 -->
+        <Button style="@style/DialpadButton" android:text="1" android:tag="1"/>
+        <Button style="@style/DialpadButton" android:text="2" android:tag="2"/>
+        <Button style="@style/DialpadButton" android:text="3" android:tag="3"/>
+
+        <!-- Row 2 -->
+        <Button style="@style/DialpadButton" android:text="4" android:tag="4"/>
+        <Button style="@style/DialpadButton" android:text="5" android:tag="5"/>
+        <Button style="@style/DialpadButton" android:text="6" android:tag="6"/>
+
+        <!-- Row 3 -->
+        <Button style="@style/DialpadButton" android:text="7" android:tag="7"/>
+        <Button style="@style/DialpadButton" android:text="8" android:tag="8"/>
+        <Button style="@style/DialpadButton" android:text="9" android:tag="9"/>
+
+        <!-- Row 4 -->
+        <Button style="@style/DialpadButton" android:text="*" android:tag="*"/>
+        <Button style="@style/DialpadButton" android:text="0" android:tag="0"/>
+        <Button style="@style/DialpadButton" android:text="#" android:tag="#"/>
+
+    </GridLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <ImageButton
+            android:id="@+id/btn_dial_pad_call"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/bg_circle_primary"
+            android:backgroundTint="#4CAF50"
+            android:src="@android:drawable/ic_menu_call"
+            android:tint="@android:color/white"
+            android:scaleType="centerInside"
+            android:padding="16dp"/>
+
+        <ImageButton
+            android:id="@+id/btn_backspace"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_input_delete"
+            android:tint="?attr/colorOnSurfaceVariant"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -24,6 +24,12 @@
             app:key="high_sensitivity"
             app:summary="Tăng cường khả năng phát hiện (có thể báo nhầm)"
             app:title="Độ nhạy cao" />
+            
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="stt_enabled"
+            app:summary="Hiển thị phụ đề trực tiếp khi ghi âm"
+            app:title="Chuyển giọng nói thành văn bản" />
 
         <SwitchPreferenceCompat
             app:defaultValue="false"
@@ -51,6 +57,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Thông tin">
+        <Preference
+            app:key="app_guide"
+            app:summary="Xem hướng dẫn chi tiết"
+            app:title="Hướng dẫn sử dụng" />
+            
         <Preference
             app:key="version"
             app:summary="1.0.0"

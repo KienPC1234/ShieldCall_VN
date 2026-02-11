@@ -90,7 +90,10 @@ class MessageAdapter(private val list: List<ChatItem>) : RecyclerView.Adapter<Re
                     if (sms.type == Telephony.Sms.MESSAGE_TYPE_FAILED || sms.type == Telephony.Sms.MESSAGE_TYPE_OUTBOX) {
                         holder.txtStatus.visibility = View.VISIBLE
                         holder.txtStatus.text = "Lỗi gửi"
-                        holder.txtStatus.setTextColor(0xFFFF0000.toInt()) // Red
+                        
+                        val typedValue = android.util.TypedValue()
+                        holder.itemView.context.theme.resolveAttribute(com.google.android.material.R.attr.colorError, typedValue, true)
+                        holder.txtStatus.setTextColor(typedValue.data)
                     } else {
                         holder.txtStatus.visibility = View.GONE 
                     }

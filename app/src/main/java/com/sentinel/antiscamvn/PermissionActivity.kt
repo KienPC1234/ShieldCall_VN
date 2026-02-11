@@ -43,7 +43,8 @@ class PermissionActivity : AppCompatActivity() {
             val permissions = mutableListOf(
                 Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.READ_CALL_LOG,
-                Manifest.permission.RECORD_AUDIO
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.READ_CONTACTS
             )
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 permissions.add(Manifest.permission.POST_NOTIFICATIONS)
@@ -69,6 +70,7 @@ class PermissionActivity : AppCompatActivity() {
         val hasPhoneState = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
         val hasCallLog = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
         val hasRecordAudio = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        val hasContacts = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
         
         val hasNotification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
              ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
@@ -76,7 +78,7 @@ class PermissionActivity : AppCompatActivity() {
             true
         }
 
-        val hasCallPermission = hasPhoneState && hasCallLog && hasRecordAudio && hasNotification
+        val hasCallPermission = hasPhoneState && hasCallLog && hasRecordAudio && hasNotification && hasContacts
 
         val hasOverlayPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Settings.canDrawOverlays(this)
@@ -84,17 +86,8 @@ class PermissionActivity : AppCompatActivity() {
             true
         }
 
-        if (hasCallPermission) {
-            permissionCallLayout.visibility = View.GONE
-        } else {
-            permissionCallLayout.visibility = View.VISIBLE
-        }
-
-        if (hasOverlayPermission) {
-            permissionOverlayLayout.visibility = View.GONE
-        } else {
-            permissionOverlayLayout.visibility = View.VISIBLE
-        }
+        permissionCallLayout.visibility = if (hasCallPermission) View.GONE else View.VISIBLE
+        permissionOverlayLayout.visibility = if (hasOverlayPermission) View.GONE else View.VISIBLE
 
         if (hasCallPermission && hasOverlayPermission) {
             startActivity(Intent(this, MainActivity::class.java))

@@ -5,8 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "contact_aliases")
 data class ContactAliasEntity(
-    @PrimaryKey val phoneNumber: String, // Normalized phone number
-    val displayName: String?,
-    val avatarPath: String?, // URI string or file path
-    val isArchived: Boolean = false
+    @PrimaryKey val phoneNumber: String,
+    val displayName: String? = null,
+    val avatarPath: String? = null,
+    val isArchived: Boolean = false,
+    val aiTag: String? = null,
+    val riskLevel: String? = null
 )

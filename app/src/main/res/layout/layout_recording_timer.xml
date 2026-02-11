@@ -2,36 +2,61 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_recording_timer"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="50dp"
+    app:cardCornerRadius="16dp"
     app:cardElevation="4dp"
     app:cardBackgroundColor="@color/shield_error">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
-        <ImageView
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:src="@android:drawable/ic_btn_speak_now"
-            app:tint="@color/white"/>
-
-        <TextView
-            android:id="@+id/txt_recording_time"
+        <!-- Timer Row -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="00:00"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@android:drawable/ic_btn_speak_now"
+                app:tint="@color/white"/>
+
+            <TextView
+                android:id="@+id/txt_recording_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginStart="8dp"
+                android:fontFamily="monospace"/>
+        </LinearLayout>
+        
+        <!-- Live Caption / STT -->
+        <TextView
+            android:id="@+id/txt_live_caption"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="12dp"
+            android:paddingBottom="8dp"
+            android:text=""
             android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginStart="8dp"
-            android:fontFamily="monospace"/>
+            android:textSize="12sp"
+            android:visibility="gone"
+            android:gravity="center"
+            android:maxLines="3"
+            android:ellipsize="end"/>
+            
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

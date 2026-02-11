@@ -48,13 +48,20 @@
 
     <fragment
         android:id="@+id/nav_contacts"
-        android:name="com.sentinel.antiscamvn.ui.PlaceholderFragment"
-        android:label="Danh bạ" />
+        android:name="com.sentinel.antiscamvn.ui.ContactFragment"
+        android:label="Danh bạ"
+        tools:layout="@layout/fragment_contacts" />
 
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.sentinel.antiscamvn.ui.SettingsFragment"
         android:label="Cài đặt"
         tools:layout="@layout/activity_settings" />
+        
+    <fragment
+        android:id="@+id/nav_guide"
+        android:name="com.sentinel.antiscamvn.ui.GuideFragment"
+        android:label="Hướng dẫn sử dụng"
+        tools:layout="@layout/fragment_guide" />
 
 </navigation>

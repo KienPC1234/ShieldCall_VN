@@ -22,6 +22,7 @@ class SmsAdapter(
         val txtDate: TextView = v.findViewById(R.id.txt_date)
         val txtUnreadCount: TextView = v.findViewById(R.id.txt_unread_count)
         val imgVerified: android.widget.ImageView = v.findViewById(R.id.img_verified)
+        val txtTag: TextView = v.findViewById(R.id.txt_tag)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmsViewHolder {
@@ -41,6 +42,23 @@ class SmsAdapter(
         }
         
         holder.txtPreview.text = item.body
+        
+        // Tag Logic
+        if (!item.aiTag.isNullOrEmpty()) {
+            holder.txtTag.visibility = View.VISIBLE
+            holder.txtTag.text = item.aiTag
+            
+            // Basic risk coloring
+            if (item.riskLevel == "DANGER" || item.riskLevel == "WARNING") {
+                holder.txtTag.background.setTint(ContextCompat.getColor(context, R.color.danger_tag_background))
+                holder.txtTag.setTextColor(ContextCompat.getColor(context, R.color.danger_tag_text))
+            } else {
+                holder.txtTag.background.setTint(ContextCompat.getColor(context, R.color.tag_background))
+                holder.txtTag.setTextColor(ContextCompat.getColor(context, R.color.tag_text))
+            }
+        } else {
+            holder.txtTag.visibility = View.GONE
+        }
 
         // Avatar Logic
         if (!item.avatarPath.isNullOrEmpty()) {
@@ -70,6 +88,15 @@ class SmsAdapter(
             DateUtils.FORMAT_ABBREV_RELATIVE
         )
 
+        // Resolve Theme Colors
+        val typedValueOnSurface = android.util.TypedValue()
+        context.theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValueOnSurface, true)
+        val colorOnSurface = typedValueOnSurface.data
+        
+        val typedValueOnSurfaceVariant = android.util.TypedValue()
+        context.theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurfaceVariant, typedValueOnSurfaceVariant, true)
+        val colorOnSurfaceVariant = typedValueOnSurfaceVariant.data
+
         // Unread Indicator (read == 0 is unread)
         val isUnread = item.unreadCount > 0 || (item.read == 0 && item.unreadCount == 0)
         
@@ -79,18 +106,18 @@ class SmsAdapter(
                 if (item.unreadCount > 99) "99+" else item.unreadCount.toString()
             } else "1"
             
-            holder.txtSender.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onSurface))
+            holder.txtSender.setTextColor(colorOnSurface)
             holder.txtSender.typeface = android.graphics.Typeface.DEFAULT_BOLD
             
-            holder.txtPreview.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onSurface))
+            holder.txtPreview.setTextColor(colorOnSurface)
             holder.txtPreview.typeface = android.graphics.Typeface.DEFAULT_BOLD
         } else {
             holder.txtUnreadCount.visibility = View.GONE
             
-            holder.txtSender.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onSurface))
-            holder.txtSender.typeface = android.graphics.Typeface.DEFAULT_BOLD // Keep sender bold but lighter
+            holder.txtSender.setTextColor(colorOnSurface)
+            holder.txtSender.typeface = android.graphics.Typeface.DEFAULT_BOLD
             
-            holder.txtPreview.setTextColor(ContextCompat.getColor(context, R.color.md_theme_light_onSurfaceVariant))
+            holder.txtPreview.setTextColor(colorOnSurfaceVariant)
             holder.txtPreview.typeface = android.graphics.Typeface.DEFAULT
         }
 

@@ -54,6 +54,12 @@
         tools:targetApi="31">
 
         <service
+            android:name=".manager.AudioCaptureService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
+
+        <service
             android:name=".OverlayService"
             android:enabled="true"
             android:exported="false"
@@ -108,7 +114,6 @@
             </intent-filter>
         </service>
 
-        <!-- Phone Components -->
         <activity
             android:name=".phone.DialerActivity"
             android:exported="true">
@@ -116,10 +121,6 @@
                 <action android:name="android.intent.action.DIAL" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="tel" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.DIAL" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -151,6 +152,10 @@
             android:label="Log Viewer" />
 
         <activity android:name=".ImagePickerActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:excludeFromRecents="true" />
+
+        <activity android:name=".AudioPickerActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:excludeFromRecents="true" />
             

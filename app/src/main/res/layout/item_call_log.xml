@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="16dp"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/img_call_type"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@android:drawable/sym_call_incoming"
+        android:tint="?attr/colorOnSurfaceVariant"
+        android:layout_marginEnd="16dp"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_log_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0912345678"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"/>
+
+        <TextView
+            android:id="@+id/txt_log_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hôm qua"
+            android:textSize="12sp"
+            android:textColor="?attr/colorOnSurfaceVariant"/>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btn_log_call"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_menu_call"
+        android:tint="?attr/colorPrimary"/>
+
+</LinearLayout>

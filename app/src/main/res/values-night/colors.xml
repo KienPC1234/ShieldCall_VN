@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- M3 Dark Colors -->
+    <color name="md_theme_dark_primary">#A4C9FF</color>
+    <color name="md_theme_dark_onPrimary">#00315B</color>
+    <color name="md_theme_dark_primaryContainer">#004787</color>
+    <color name="md_theme_dark_onPrimaryContainer">#D4E3FF</color>
+    <color name="md_theme_dark_secondary">#7FCFFF</color>
+    <color name="md_theme_dark_onSecondary">#00344B</color>
+    <color name="md_theme_dark_secondaryContainer">#004C63</color>
+    <color name="md_theme_dark_onSecondaryContainer">#BDE9FF</color>
+    <color name="md_theme_dark_tertiary">#FFB2BD</color>
+    <color name="md_theme_dark_onTertiary">#670028</color>
+    <color name="md_theme_dark_tertiaryContainer">#8C0F3F</color>
+    <color name="md_theme_dark_onTertiaryContainer">#FFD9DF</color>
+    <color name="md_theme_dark_error">#FFB4AB</color>
+    <color name="md_theme_dark_errorContainer">#93000A</color>
+    <color name="md_theme_dark_onError">#690005</color>
+    <color name="md_theme_dark_onErrorContainer">#FFDAD6</color>
+    <color name="md_theme_dark_background">#1A1C1E</color>
+    <color name="md_theme_dark_onBackground">#E3E2E6</color>
+    <color name="md_theme_dark_surface">#1A1C1E</color>
+    <color name="md_theme_dark_onSurface">#E3E2E6</color>
+    <color name="md_theme_dark_surfaceVariant">#43474E</color>
+    <color name="md_theme_dark_onSurfaceVariant">#C4C6CF</color>
+    <color name="md_theme_dark_outline">#8E9099</color>
+    <color name="md_theme_dark_inverseOnSurface">#1A1C1E</color>
+    <color name="md_theme_dark_inverseSurface">#E3E2E6</color>
+    <color name="md_theme_dark_inversePrimary">#005FB0</color>
+    <color name="md_theme_dark_shadow">#000000</color>
+    <color name="md_theme_dark_surfaceTint">#A4C9FF</color>
+    <color name="md_theme_dark_outlineVariant">#43474E</color>
+    <color name="md_theme_dark_scrim">#000000</color>
+
+    <!-- Chat Specific -->
+    <color name="chat_bubble_sent">#004787</color> <!-- Primary Container -->
+    <color name="chat_text_sent">#D4E3FF</color> <!-- On Primary Container -->
+    <color name="chat_bubble_received">#43474E</color> <!-- Surface Variant -->
+    <color name="chat_text_received">#E3E2E6</color> <!-- On Surface -->
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- Shield Specific Colors (Mapped to MD3 Dark) -->
+    <color name="shield_primary">@color/md_theme_dark_primary</color>
+    <color name="shield_on_primary">@color/md_theme_dark_onPrimary</color>
+    <color name="shield_secondary">@color/md_theme_dark_secondary</color>
+    <color name="shield_background">@color/md_theme_dark_background</color>
+    <color name="shield_surface">@color/md_theme_dark_surface</color>
+    <color name="shield_error">@color/md_theme_dark_error</color>
+    
+    <color name="bg_ai_chat">@color/chat_bubble_received</color>
+    <color name="bg_user_chat">@color/chat_bubble_sent</color>
+
+    <color name="shield_on_surface">@color/md_theme_dark_onSurface</color>
+    <color name="shield_primary_container">@color/md_theme_dark_primaryContainer</color>
+    <color name="shield_on_primary_container">@color/md_theme_dark_onPrimaryContainer</color>
+    <color name="shield_outline">@color/md_theme_dark_outline</color>
+    <color name="shield_surface_variant">@color/md_theme_dark_surfaceVariant</color>
+    <color name="shield_success">#81C784</color>
+    
+    <color name="bg_input_field">#303030</color>
+
+    <color name="tag_background">#43474E</color>
+    <color name="tag_text">#E3E2E6</color>
+    
+    <color name="danger_tag_background">#93000A</color>
+    <color name="danger_tag_text">#FFDAD6</color>
+
+    <color name="safe_tag_background">#00390A</color>
+    <color name="safe_tag_text">#B6F2AF</color>
+</resources>

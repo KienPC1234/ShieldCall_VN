@@ -68,11 +68,20 @@
             android:text="Hiển thị trên ứng dụng khác (để hiện cảnh báo)"
             android:textStyle="bold"/>
 
-        <Button
-            android:id="@+id/btn_grant_overlay_permission"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cấp quyền"/>
-    </LinearLayout>
+                <Button
 
-</LinearLayout>
+                    android:id="@+id/btn_grant_overlay_permission"
+
+                    android:layout_width="wrap_content"
+
+                    android:layout_height="wrap_content"
+
+                    android:text="Cấp quyền"/>
+
+            </LinearLayout>
+
+        
+
+        </LinearLayout>
+
+        

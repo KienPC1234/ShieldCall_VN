@@ -13,11 +13,15 @@ import com.sentinel.antiscamvn.utils.LogManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+import com.sentinel.antiscamvn.network.ConversationAnalysisRequest
+import com.sentinel.antiscamvn.network.RetrofitClient
+
 class SmsRepository(private val context: Context) {
 
     private val db = AppDatabase.getDatabase(context)
     private val smsDao = db.smsDao()
     private val contactAliasDao = db.contactAliasDao()
+    private val blockedNumberDao = db.blockedNumberDao()
 
     /**
      * ✅ Get conversations from SYSTEM DB + LOCAL DB (Hybrid)
@@ -77,6 +81,8 @@ class SmsRepository(private val context: Context) {
                         val contactName = alias?.displayName ?: getContactName(address)
                         val avatarPath = alias?.avatarPath
                         val isArchived = alias?.isArchived ?: false
+                        val aiTag = alias?.aiTag
+                        val riskLevel = alias?.riskLevel
 
                         // Add to map using Address as key
                         if (address.isNotEmpty()) {
@@ -89,7 +95,9 @@ class SmsRepository(private val context: Context) {
                                 threadId = threadId,
                                 unreadCount = getUnreadCount(threadId),
                                 avatarPath = avatarPath,
-                                isArchived = isArchived
+                                isArchived = isArchived,
+                                aiTag = aiTag,
+                                riskLevel = riskLevel
                             )
                         }
                     }
@@ -127,7 +135,9 @@ class SmsRepository(private val context: Context) {
                         threadId = targetThreadId,
                         unreadCount = local.unreadCount, // Use local unread count or merge? Local count is reliable for local msgs
                         avatarPath = alias?.avatarPath,
-                        isArchived = alias?.isArchived ?: false
+                        isArchived = alias?.isArchived ?: false,
+                        aiTag = alias?.aiTag,
+                        riskLevel = alias?.riskLevel
                     )
                 }
             }
@@ -212,7 +222,13 @@ class SmsRepository(private val context: Context) {
         
         // 2. Fetch from Local DB
         try {
-            val localMessages = smsDao.getMessagesByThread(threadId)
+            val localMessages = if (!address.isNullOrEmpty()) {
+                val altAddress = getAlternativeAddress(address)
+                smsDao.getMessages(address, altAddress) 
+            } else {
+                smsDao.getMessagesByThread(threadId)
+            }
+            
             localMessages.forEach { entity ->
                 val key = "${entity.body}${entity.date}"
                 if (!seenIds.contains(key)) {
@@ -250,12 +266,49 @@ class SmsRepository(private val context: Context) {
                 date = date,
                 read = isSent, // Sent are read
                 isSent = isSent,
-                threadId = threadId!!
+                threadId = threadId
             )
             smsDao.insertMessage(sms)
         } catch (e: Exception) {
             LogManager.log(TAG, "Error saving local message: ${e.message}")
             -1L
+        }
+    }
+    
+    // --- BLOCKING ---
+    suspend fun blockNumber(phoneNumber: String) = withContext(Dispatchers.IO) {
+        blockedNumberDao.blockNumber(com.sentinel.antiscamvn.data.local.BlockedNumberEntity(phoneNumber))
+    }
+    
+    suspend fun unblockNumber(phoneNumber: String) = withContext(Dispatchers.IO) {
+        blockedNumberDao.unblockNumber(phoneNumber)
+    }
+    
+    suspend fun isBlocked(phoneNumber: String): Boolean = withContext(Dispatchers.IO) {
+        return@withContext blockedNumberDao.isBlocked(phoneNumber)
+    }
+    
+    suspend fun getAllBlockedNumbers(): List<String> = withContext(Dispatchers.IO) {
+        return@withContext blockedNumberDao.getAllBlockedNumbers().map { it.phoneNumber }
+    }
+    
+    suspend fun analyzeSender(phoneNumber: String, messages: List<String>) = withContext(Dispatchers.IO) {
+        if (!RetrofitClient.isNetworkAvailable()) return@withContext
+        try {
+            val response = RetrofitClient.instance.analyzeConversation(
+                ConversationAnalysisRequest(phoneNumber, messages)
+            ).execute()
+            
+            if (response.isSuccessful && response.body() != null) {
+                val body = response.body()!!
+                // Ensure alias exists
+                if (contactAliasDao.getAlias(phoneNumber) == null) {
+                    contactAliasDao.insertAlias(ContactAliasEntity(phoneNumber))
+                }
+                contactAliasDao.updateAiInfo(phoneNumber, body.tag, body.riskLevel)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -334,6 +387,10 @@ class SmsRepository(private val context: Context) {
         }
         contactAliasDao.insertAlias(newEntity)
     }
+
+    suspend fun getAllAliases(): List<ContactAliasEntity> = withContext(Dispatchers.IO) {
+        return@withContext contactAliasDao.getAllAliases()
+    }
     
     suspend fun archiveConversation(address: String, isArchived: Boolean) = withContext(Dispatchers.IO) {
         val existing = contactAliasDao.getAlias(address)
@@ -388,6 +445,16 @@ class SmsRepository(private val context: Context) {
     // -------------------------
     // Helpers
     // -------------------------
+
+    private fun getAlternativeAddress(address: String): String {
+        return if (address.startsWith("+84")) {
+            "0" + address.substring(3)
+        } else if (address.startsWith("0")) {
+            "+84" + address.substring(1)
+        } else {
+            address
+        }
+    }
 
     private fun getContactName(phoneNumber: String): String? {
         if (phoneNumber.isBlank()) return null

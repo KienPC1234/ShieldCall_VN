@@ -4,16 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/md_theme_light_background">
+    android:background="?android:attr/colorBackground">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_profile"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/transparent"
         app:title="Hồ sơ cá nhân"
         app:titleTextAppearance="@style/TextAppearance.ShieldCall.Title"
-        app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel" />
+        app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel"
+        app:navigationIconTint="?attr/colorOnSurface" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -37,7 +38,7 @@
                     android:layout_height="match_parent"
                     app:cardCornerRadius="60dp"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/md_theme_light_secondaryContainer">
+                    app:cardBackgroundColor="?attr/colorSecondaryContainer">
 
                     <ImageView
                         android:id="@+id/img_profile_avatar"
@@ -53,7 +54,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="U"
-                        android:textColor="@color/md_theme_light_onSecondaryContainer"
+                        android:textColor="?attr/colorOnSecondaryContainer"
                         android:textSize="48sp"
                         android:textStyle="bold" />
                 </androidx.cardview.widget.CardView>

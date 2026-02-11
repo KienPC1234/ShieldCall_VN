@@ -13,7 +13,7 @@
         app:cardCornerRadius="24dp"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         app:cardElevation="0dp"
-        app:cardBackgroundColor="@color/md_theme_light_secondaryContainer">
+        app:cardBackgroundColor="?attr/colorSecondaryContainer">
         
         <ImageView
             android:id="@android:id/icon"
@@ -34,14 +34,14 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/md_theme_light_onSurface"/>
+            android:textColor="?attr/colorOnSurface"/>
 
         <TextView
             android:id="@android:id/text2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:textColor="@color/md_theme_light_onSurfaceVariant"/>
+            android:textColor="?attr/colorOnSurfaceVariant"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -33,7 +33,7 @@ class CallReceiver : BroadcastReceiver() {
 
                 if (!incomingNumber.isNullOrEmpty()) {
                     val serviceIntent = Intent(context, OverlayService::class.java).apply {
-                        action = "SHOW_POPUP"
+                        action = OverlayService.ACTION_SHOW_POPUP
                         putExtra("PHONE", incomingNumber)
                     }
 
@@ -44,8 +44,27 @@ class CallReceiver : BroadcastReceiver() {
                     }
                 }
             }
-            else -> {
-                // Do nothing, let the service continue running
+            TelephonyManager.EXTRA_STATE_OFFHOOK -> {
+                // Call answered or made -> Show floating icon
+                val serviceIntent = Intent(context, OverlayService::class.java).apply {
+                    action = OverlayService.ACTION_SHOW_ICON
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(serviceIntent)
+                } else {
+                    context.startService(serviceIntent)
+                }
+            }
+            TelephonyManager.EXTRA_STATE_IDLE -> {
+                // Call ended -> Hide everything
+                val serviceIntent = Intent(context, OverlayService::class.java).apply {
+                    action = OverlayService.ACTION_HIDE_OVERLAY
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(serviceIntent)
+                } else {
+                    context.startService(serviceIntent)
+                }
             }
         }
     }

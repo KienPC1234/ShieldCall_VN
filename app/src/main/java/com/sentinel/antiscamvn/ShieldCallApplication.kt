@@ -20,6 +20,23 @@ class ShieldCallApplication : Application() {
         super.onCreate()
         LogManager.init(this)
         setupGlobalCrashHandler()
+        createNotificationChannels()
+    }
+
+    private fun createNotificationChannels() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = android.app.NotificationChannel(
+                "call_channel",
+                "Cuộc gọi đến",
+                android.app.NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Thông báo cho cuộc gọi đang đến"
+                setSound(null, null)
+                enableVibration(true)
+            }
+            val manager = getSystemService(android.app.NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
+        }
     }
 
     private fun setupGlobalCrashHandler() {

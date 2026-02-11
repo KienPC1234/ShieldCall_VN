@@ -59,4 +59,15 @@
     <color name="shield_outline">@color/md_theme_light_outline</color>
     <color name="shield_surface_variant">@color/md_theme_light_surfaceVariant</color>
     <color name="shield_success">#2E7D32</color> <!-- Green -->
+    
+    <color name="bg_input_field">#F0F0F0</color>
+    
+    <color name="tag_background">#E0E0E0</color>
+    <color name="tag_text">#000000</color>
+    
+    <color name="danger_tag_background">#FFCDD2</color>
+    <color name="danger_tag_text">#B71C1C</color>
+
+    <color name="safe_tag_background">#E8F5E9</color>
+    <color name="safe_tag_text">#1B5E20</color>
 </resources>

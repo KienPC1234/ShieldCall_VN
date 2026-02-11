@@ -15,7 +15,7 @@ class ChatbotFragment : Fragment() {
         val webView = view.findViewById<WebView>(R.id.webView)
         webView.webViewClient = WebViewClient()
         webView.settings.javaScriptEnabled = true
-        // Load giao diện Chatbot web (nếu có) hoặc URL local
+        // Load giao diện Chatbot web gốc
         webView.loadUrl("https://www.bing.com/chat") 
         return view
     }

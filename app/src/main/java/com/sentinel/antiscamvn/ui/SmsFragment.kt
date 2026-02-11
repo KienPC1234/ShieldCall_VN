@@ -32,7 +32,9 @@ data class SmsConversation(
     val threadId: Long,
     val unreadCount: Int = 0,
     val avatarPath: String? = null,
-    val isArchived: Boolean = false
+    val isArchived: Boolean = false,
+    val aiTag: String? = null,
+    val riskLevel: String? = null
 )
 
 class SmsFragment : Fragment() {

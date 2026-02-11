@@ -3,6 +3,7 @@ package com.sentinel.antiscamvn.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.navigation.fragment.findNavController
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -23,6 +24,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Permissions
         findPreference<Preference>("manage_permissions")?.setOnPreferenceClickListener {
             startActivity(Intent(requireContext(), PermissionActivity::class.java))
+            true
+        }
+        
+        // Guide
+        findPreference<Preference>("app_guide")?.setOnPreferenceClickListener {
+            try {
+                findNavController().navigate(R.id.nav_guide)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
             true
         }
 

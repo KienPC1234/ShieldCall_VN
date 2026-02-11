@@ -18,4 +18,7 @@ interface ContactAliasDao {
     
     @Query("UPDATE contact_aliases SET isArchived = :isArchived WHERE phoneNumber = :phoneNumber")
     suspend fun updateArchivedStatus(phoneNumber: String, isArchived: Boolean)
+
+    @Query("UPDATE contact_aliases SET aiTag = :tag, riskLevel = :risk WHERE phoneNumber = :phoneNumber")
+    suspend fun updateAiInfo(phoneNumber: String, tag: String, risk: String)
 }

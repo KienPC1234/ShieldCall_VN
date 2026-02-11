@@ -66,7 +66,7 @@ class SmsReceiver : BroadcastReceiver() {
 
             // Gửi nội dung này cho AI phân tích ngầm
             showNotification(context, sender, combinedBody)
-            Toast.makeText(context, "ShieldCall: Tin nhắn mới từ $sender", Toast.LENGTH_SHORT).show()
+            // Toast removed per user request
         }
     }
     

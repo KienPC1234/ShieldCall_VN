@@ -28,7 +28,7 @@
             android:layout_height="match_parent"
             app:cardCornerRadius="50dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/md_theme_light_secondaryContainer">
+            app:cardBackgroundColor="?attr/colorSecondaryContainer">
 
             <ImageView
                 android:id="@+id/img_avatar_preview"
@@ -44,7 +44,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="?"
-                android:textColor="@color/md_theme_light_onSecondaryContainer"
+                android:textColor="?attr/colorOnSecondaryContainer"
                 android:textSize="40sp"
                 android:textStyle="bold" />
         </androidx.cardview.widget.CardView>

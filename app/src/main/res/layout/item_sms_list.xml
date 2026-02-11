@@ -19,7 +19,7 @@
         android:layout_height="48dp"
         app:cardCornerRadius="24dp"
         app:cardElevation="0dp"
-        app:cardBackgroundColor="@color/md_theme_light_secondaryContainer"
+        app:cardBackgroundColor="?attr/colorSecondaryContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -30,7 +30,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="A"
-            android:textColor="@color/md_theme_light_onSecondaryContainer"
+            android:textColor="?attr/colorOnSecondaryContainer"
             android:textSize="20sp"
             android:textStyle="bold"
             tools:text="A" />
@@ -53,7 +53,7 @@
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/md_theme_light_onSurface"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/txt_preview"
@@ -76,10 +76,27 @@
         tools:visibility="visible" />
 
     <TextView
+        android:id="@+id/txt_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/bg_ai_tag"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:text="TAG"
+        android:textColor="@color/tag_text"
+        android:textSize="10sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_sender"
+        app:layout_constraintStart_toEndOf="@+id/img_verified"
+        app:layout_constraintTop_toTopOf="@+id/txt_sender"
+        tools:visibility="visible" />
+
+    <TextView
         android:id="@+id/txt_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/md_theme_light_onSurfaceVariant"
+        android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="12sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/txt_sender"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +111,7 @@
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/md_theme_light_onSurfaceVariant"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/txt_unread_count"

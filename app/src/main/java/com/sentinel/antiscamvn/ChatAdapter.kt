@@ -74,7 +74,11 @@ class ChatAdapter(private val messages: List<ChatMessage>) :
                 val moreText = TextView(container.context).apply {
                     text = "+${images.size - 3}"
                     textSize = 14f
-                    setTextColor(0xFF757575.toInt())
+                    
+                    val typedValue = android.util.TypedValue()
+                    context.theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurfaceVariant, typedValue, true)
+                    setTextColor(typedValue.data)
+                    
                     setPadding((8 * density).toInt(), 0, (8 * density).toInt(), 0)
                 }
                 container.addView(moreText)

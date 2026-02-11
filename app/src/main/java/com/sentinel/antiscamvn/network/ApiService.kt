@@ -66,6 +66,17 @@ data class SessionStatusResponse(
     @SerializedName("new_session_id") val newSessionId: String? = null
 )
 
+// 6. Analyze Conversation
+data class ConversationAnalysisRequest(
+    @SerializedName("phone_number") val phoneNumber: String,
+    @SerializedName("messages") val messages: List<String>
+)
+
+data class ConversationAnalysisResponse(
+    @SerializedName("tag") val tag: String, // "Shipper", "Spam", etc.
+    @SerializedName("risk_level") val riskLevel: String // "SAFE", "WARNING", "DANGER"
+)
+
 // --- API Interface ---
 
 interface ApiService {
@@ -111,4 +122,8 @@ interface ApiService {
     // 5. Report Crash
     @POST("report-crash")
     fun reportCrash(@Body report: CrashReport): Call<ResponseBody>
+    
+    // 6. Analyze Conversation
+    @POST("analyze-conversation")
+    fun analyzeConversation(@Body request: ConversationAnalysisRequest): Call<ConversationAnalysisResponse>
 }

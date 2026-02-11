@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="2dp"
-        android:textColor="@color/md_theme_light_outline"
+        android:textColor="?attr/colorOutline"
         android:textSize="10sp"
         app:layout_constraintStart_toStartOf="@+id/txt_message_body"
         app:layout_constraintTop_toBottomOf="@+id/txt_message_body"
